@@ -45,7 +45,7 @@ export const decisions: Decision[] = [
 		obvious: 'Stand by the number I had already recommended.',
 		did: 'Cut the base salary in my own recommendation by nearly a third, and retitled the role to match the pay.',
 		why: 'TODO: Chander to supply the reason for the cut. The source note records the change, not the reason.',
-		homeCard: true,
+		homeCard: false,
 	},
 	{
 		id: 'loadbuddy-one-screen',
@@ -81,6 +81,6 @@ export const decisions: Decision[] = [
 		obvious: 'Build the product, then look for buyers.',
 		did: 'Wrote down when I would stop: if losses are under about ₹10k and juniors cope fine, shelve it.',
 		why: 'Small clubs are users, not customers. They have no budget, and free junior labour already does the work.',
-		homeCard: false,
+		homeCard: true,
 	},
 ];

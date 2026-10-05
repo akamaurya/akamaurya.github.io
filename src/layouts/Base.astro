@@ -60,7 +60,6 @@ const { title, description, noindex = false } = Astro.props;
 		justify-content: space-between;
 		gap: 0.25rem 1.5rem;
 		padding-block: 0.75rem;
-		scroll-snap-align: start; /* top of the page stays a snap point, so the nav is reachable */
 	}
 	.nav a { text-decoration: none; }
 	.nav nav { display: flex; flex-wrap: wrap; gap: 0 1.25rem; }
@@ -71,7 +70,6 @@ const { title, description, noindex = false } = Astro.props;
 		border-top: 1px solid var(--rule);
 		padding-block: 2.5rem 3rem;
 		font-size: 0.94rem;
-		scroll-snap-align: end;
 	}
 	.foot p { margin: 0 0 1rem; }
 	.links { display: flex; flex-wrap: wrap; gap: 0 1.25rem; }
