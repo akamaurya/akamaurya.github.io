@@ -30,8 +30,9 @@
 	const els = [...document.querySelectorAll<HTMLElement>('[data-pointer]')];
 	let origin: number[][] = [];
 	let w = innerWidth, h = innerHeight;
-	let cx = -999, cy = -999, px = -999, py = -999;
+	let cx = w / 2, cy = h * 0.4, px = cx, py = cy;
 	let queued = false;
+	let floating = false, since = 0, from = [cx, cy];
 
 	function measure() {
 		w = innerWidth; h = innerHeight;
@@ -52,25 +53,38 @@
 		});
 	}
 
-	// Touch and no-hover devices: a slow autonomous drift on a 40 second loop.
-	function drift(t: number) {
-		const a = (t / 40000) * 2 * Math.PI;
-		cx = px = w * (0.5 + 0.35 * Math.sin(a));
-		cy = py = h * (0.4 + 0.2 * Math.sin(2 * a));
+	// No pointer on the page (touch devices, before the mouse arrives, after it leaves): the light floats
+	// on its own, a slow 40 second loop. It eases out from wherever it was over 2 seconds, so it never jumps.
+	function float() {
+		if (floating) return;
+		floating = true; since = 0; from = [cx, cy];
+		requestAnimationFrame(step);
+	}
+	function step(t: number) {
+		if (!floating) return;
+		since ||= t;
+		const a = ((t - since) / 40000) * 2 * Math.PI;
+		const k = Math.min(1, (t - since) / 2000);
+		const ease = k * k * (3 - 2 * k);
+		cx = from[0] + (w * (0.5 + 0.35 * Math.sin(a)) - from[0]) * ease;
+		cy = from[1] + (h * (0.4 + 0.2 * Math.sin(2 * a)) - from[1]) * ease;
+		px = cx + scrollX; py = cy + scrollY;
 		write();
-		requestAnimationFrame(drift);
+		requestAnimationFrame(step);
 	}
 
 	if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
 		measure();
 		addEventListener('resize', measure);
-		if (matchMedia('(hover: none)').matches) {
-			requestAnimationFrame(drift);
-		} else {
+		float();
+		if (matchMedia('(hover: hover)').matches) {
+			// The mouse takes over the moment it moves on the page, and hands back when it leaves the window.
 			addEventListener('pointermove', (e) => {
+				floating = false;
 				cx = e.clientX; cy = e.clientY; px = e.pageX; py = e.pageY;
 				if (!queued) { queued = true; requestAnimationFrame(write); }
 			}, { passive: true });
+			document.addEventListener('pointerout', (e) => { if (!e.relatedTarget) float(); });
 		}
 	}
 </script>
