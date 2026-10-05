@@ -1,32 +1,260 @@
 ---
-// ponytail: placeholder until Phase 2 replaces this page. No layout or global CSS yet.
+import { existsSync } from 'node:fs';
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import { decisions } from '../data/decisions';
+
+const homeCards = decisions.filter((d) => d.homeCard);
+// Render only when the file exists.
+const hasHeadshot = existsSync('public/img/headshot.webp');
+const hasResume = existsSync('public/resume.pdf');
+// ponytail: inner pages arrive in Phase 3. Cards, steps and the essay get their links then.
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Chander Maurya Kumbkarni</title>
-		<style>
-			body {
-				margin: 0;
-				min-height: 100vh;
-				display: grid;
-				place-content: center;
-				padding: 16px;
-				background: #F5F2EA;
-				color: #16191E;
-				font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
-				text-align: center;
-			}
-			h1 { font-weight: 400; letter-spacing: -0.02em; margin: 0 0 0.5rem; }
-			p { margin: 0; color: #5E6773; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
-		</style>
-	</head>
-	<body>
-		<main>
-			<h1>Chander Maurya Kumbkarni</h1>
-			<p>Site in progress.</p>
-		</main>
-	</body>
-</html>
+<Base
+	title="Chander Maurya Kumbkarni"
+	description="I worked on Google’s Pixel pricing through Smollan, then on a hotel’s costs in Dharamshala. I am looking for a Founder’s Office role that brings together everything I have learnt."
+>
+	<Hero />
+
+	<section id="work" class="section wrap" aria-labelledby="q-wrong">
+		<p class="label">The Divine Hima · Dharamshala · 2026</p>
+		<h2 id="q-wrong" class="t-question">Can he find the number that is <em>wrong</em>?</h2>
+		<p class="lede">
+			An independent engagement with a nine-room family hotel and its restaurant, from June 2026. No analytics
+			team, no data warehouse.
+		</p>
+		<ol class="steps">
+			<li>
+				<span class="figure">5%</span>
+				<p>One of three vendors printed prices without GST. The other two included it. Every comparison against that vendor was off by 5%.</p>
+			</li>
+			<li>
+				<span class="figure">₹139 to ₹113</span>
+				<p>Rebuilt the cost of all 31 dishes from 17 vendor bills and 106 line items. The average cost per dish moved from ₹139 estimated to ₹113 actual. Modelled contribution up 28%.</p>
+			</li>
+			<li>
+				<span class="figure">73 to 31</span>
+				<p>Cut the delivery menu from 73 items to 31 and repriced every survivor to a cost-derived target. Then checked every published price live against the plan. Exact match.</p>
+			</li>
+		</ol>
+	</section>
+
+	<section class="section wrap" aria-labelledby="q-fix">
+		<p class="label">Google via Smollan · Aug 2024 to Mar 2026</p>
+		<h2 id="q-fix" class="t-question">Can he build the <em>fix</em>?</h2>
+		<p class="lede">
+			20 months at Smollan, a retail consultancy, supporting Google’s APAC and EMEA retail team.
+		</p>
+		<ol class="steps">
+			<li>
+				<span class="figure">2 to 4 hours</span>
+				<p>Every week the analysis was assembled by hand: pull, clean, format.</p>
+			</li>
+			<li>
+				<span class="figure">1,000+ rows</span>
+				<p>I built a Python pipeline that pulls 1,000+ rows of device and pricing data, adds AI-generated callouts and updates the dashboards on its own. It replaced the manual work.</p>
+			</li>
+			<li>
+				<span class="figure">32 people, 7 countries</span>
+				<p>The dashboards were used by 32 people in 7 countries, including Mountain View, in the monthly Pixel pricing calls.</p>
+			</li>
+		</ol>
+		<p class="note">Also: quarterly intelligence decks from three-plus years of panel data across 33 APAC and EMEA markets.</p>
+	</section>
+
+	<section id="decisions" class="section wrap" aria-labelledby="q-judgement">
+		<p class="label">Decisions</p>
+		<h2 id="q-judgement" class="t-question">Does he have <em>judgement</em>?</h2>
+		<p class="lede">Six times I went against the obvious move.</p>
+		<ul class="cards">
+			{homeCards.map((d) => (
+				<li class="card">
+					<p class="label">{d.source}</p>
+					<h3>{d.title}</h3>
+					<p class="why">{d.why}</p>
+				</li>
+			))}
+		</ul>
+	</section>
+
+	<section class="section wrap" aria-labelledby="q-unasked">
+		<p class="label">Built on my own time</p>
+		<h2 id="q-unasked" class="t-question">Does he ship <em>unasked</em>?</h2>
+		<ul class="work">
+			<li class="card">
+				<p class="label">SuperYou Shelf Read · Sep 2026</p>
+				<h3>A shelf audit nobody asked for.</h3>
+				<p>Four findings from two evenings of public data.</p>
+			</li>
+			<li class="card">
+				<p class="label">Finance system</p>
+				<h3>A ledger that matches the card statements to the paisa.</h3>
+				<p>Bank and card alerts become ledger entries on their own, and every statement is reconciled against them.</p>
+			</li>
+			<li class="card">
+				<p class="label">Portfolio Monitor · demo mode</p>
+				<h3>A monthly research note that writes and sends itself.</h3>
+				<a class="poster" href="https://drive.google.com/file/d/1DzwqS973fmBsXSxNxthmFaoQc3jVDo8n/view">
+					<img src="/img/portfolio-monitor.webp" width="960" height="504" loading="lazy" decoding="async" alt="Portfolio Monitor cover. Watch the two-minute walkthrough, demo mode." />
+				</a>
+				<p class="links label">
+					<a href="https://akamaurya.github.io/portfolio-monitor/">Landing page</a>
+					<a href="https://github.com/akamaurya/portfolio-monitor">Code</a>
+					<a href="https://drive.google.com/file/d/1DzwqS973fmBsXSxNxthmFaoQc3jVDo8n/view">Walkthrough, demo mode</a>
+				</p>
+			</li>
+			<li class="card loadbuddy">
+				<p class="label">LoadBuddy</p>
+				<h3>One screen. Green means push, orange means recover.</h3>
+				<!-- A CSS recreation of the app's only screen. Hover or focus the card to switch phase. -->
+				<div class="phone" aria-hidden="true">
+					<div class="screen">
+						<span class="phase load">LOAD</span>
+						<span class="phase deload">DELOAD</span>
+						<span class="next load">Next DELOAD is in 3 Days</span>
+						<span class="next deload">Next LOAD is in 7 Days</span>
+					</div>
+				</div>
+				<p class="links label">
+					<a href="https://loadbuddy.vercel.app">Live app</a>
+					<a href="https://github.com/akamaurya/LoadBuddy">Code</a>
+				</p>
+			</li>
+		</ul>
+	</section>
+
+	<section class="section wrap" aria-labelledby="q-truth">
+		<p class="label">Gaps</p>
+		<h2 id="q-truth" class="t-question">Will he tell me the <em>truth</em>?</h2>
+		<div class="prose">
+			<p><strong>What I have not done yet.</strong> I have not managed direct reports. I have coordinated teams without owning their performance. I have not run a paid ad account. I have worked full-time for 20 months.</p>
+			<p><strong>How I use AI.</strong> I use AI agents heavily to do the building. I do not use them to decide what is worth building. The 2026 work on this site was built that way: I specified it, tested it and shipped it.</p>
+		</div>
+	</section>
+
+	<section id="writing" class="section wrap" aria-labelledby="q-range">
+		<h2 id="q-range" class="label">Range</h2>
+		<p class="t-sub human">From Himachal, based in Delhi. I lift, run, brew coffee and write poems that sound a thousand years old.</p>
+		<p class="label essay-label">Essay</p>
+		<p class="essay">Inside Google’s Pixel pricing calls: 7 lessons from 20 months</p>
+	</section>
+
+	<section id="contact" class="section wrap ask" aria-labelledby="q-ask">
+		<div>
+			<p class="label">The ask</p>
+			<h2 id="q-ask" class="t-question">Based in Delhi. Available <em>immediately</em>.</h2>
+			<p class="actions">
+				<a class="button" href="mailto:mkumbkarni@gmail.com">Email me</a>
+				<a class="label" href="https://linkedin.com/in/mkumbkarni">LinkedIn</a>
+				{hasResume && <a class="label" href="/resume.pdf">Resume</a>}
+			</p>
+		</div>
+		{hasHeadshot && (
+			<img class="headshot" src="/img/headshot.webp" width="360" height="480" loading="lazy" decoding="async" alt="Chander Maurya Kumbkarni" />
+		)}
+	</section>
+</Base>
+
+<style>
+	.section {
+		padding-block: clamp(4rem, 12vh, 8rem);
+		border-top: 1px solid var(--rule);
+	}
+	.section > .label { margin: 0 0 0.75rem; }
+	h2 { margin: 0 0 1.25rem; max-width: 24ch; }
+	h3 { font: 400 1.25rem/1.25 var(--serif); letter-spacing: -0.01em; color: var(--ink); margin: 0 0 0.75rem; }
+	.lede { margin: 0 0 2.5rem; }
+
+	/* Sections 2 and 3: three beats as a static stack. Scroll scenes enhance this in Phase 4. */
+	.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 2rem; }
+	.steps li { border-top: 1px solid var(--rule); padding-top: 1rem; }
+	.steps p { margin: 0.5rem 0 0; }
+	.figure {
+		display: block;
+		font: 500 clamp(1.75rem, 3.4vw, 2.5rem)/1.1 var(--mono);
+		font-variant-numeric: tabular-nums;
+		color: var(--ink);
+		text-wrap: balance;
+	}
+	.note { margin: 2rem 0 0; color: var(--ink-3); font-size: 0.94rem; }
+
+	/* Cards */
+	.cards, .work { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; }
+	.card {
+		background: var(--sheet);
+		border: 1px solid var(--rule);
+		padding: 1.25rem 1.25rem 1.5rem;
+	}
+	.card > .label { margin: 0 0 0.75rem; }
+	.card p { margin: 0; }
+	.why { color: var(--ink-2); font-size: 0.94rem; }
+
+	.poster { display: block; margin: 0.25rem 0 1rem; }
+	.poster img { width: 100%; border: 1px solid var(--rule); }
+	.links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin-top: 1rem !important; }
+	.links a { color: var(--accent); text-decoration: none; }
+	.links a:hover { text-decoration: underline; }
+
+	/* LoadBuddy screen, colours from the app */
+	.phone {
+		width: 140px;
+		aspect-ratio: 9 / 19;
+		margin: 0.5rem 0 0;
+		border: 6px solid var(--ink);
+		border-radius: 24px;
+		overflow: hidden;
+	}
+	.screen {
+		height: 100%;
+		display: grid;
+		place-content: center;
+		gap: 0.5rem;
+		padding: 0.5rem;
+		text-align: center;
+		color: #fff;
+		background: #009E4E;
+		transition: background 0.35s ease;
+	}
+	.phase { font: 700 1.1rem/1 var(--sans); letter-spacing: 0.04em; }
+	.next { font: 400 0.6rem/1.3 var(--mono); }
+	.deload { display: none; }
+	.loadbuddy:hover .screen, .loadbuddy:focus-within .screen { background: #C0651A; }
+	.loadbuddy:hover .load, .loadbuddy:focus-within .load { display: none; }
+	.loadbuddy:hover .deload, .loadbuddy:focus-within .deload { display: inline; }
+
+	.prose p { margin: 0 0 1.25rem; }
+	.prose strong { color: var(--ink); }
+
+	.human { max-width: 30ch; margin: 1rem 0 2.5rem; }
+	.essay-label { margin: 0 0 0.5rem; }
+	.essay { font: 400 1.25rem/1.3 var(--serif); color: var(--ink); margin: 0; }
+
+	.ask { display: grid; gap: 2.5rem; align-items: end; }
+	.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; margin: 2rem 0 0; }
+	.actions .label { color: var(--accent); }
+	.button {
+		display: inline-block;
+		padding: 0.85rem 1.4rem;
+		background: var(--accent);
+		color: var(--paper);
+		font: 700 0.8rem/1 var(--sans);
+		text-transform: uppercase;
+		letter-spacing: 0.14em;
+		text-decoration: none;
+	}
+	.button:hover { background: var(--ink); color: var(--paper); }
+	.headshot { width: 140px; height: auto; }
+
+	@media (min-width: 600px) {
+		.cards, .work { grid-template-columns: repeat(2, 1fr); }
+	}
+	@media (min-width: 768px) {
+		.steps { grid-template-columns: repeat(3, 1fr); }
+		.ask { grid-template-columns: 1fr auto; }
+		.headshot { width: 180px; }
+	}
+	@media (min-width: 960px) {
+		.cards { grid-template-columns: repeat(3, 1fr); }
+	}
+</style>
