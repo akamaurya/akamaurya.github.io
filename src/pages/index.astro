@@ -17,7 +17,7 @@ const hasResume = existsSync('public/resume.pdf');
 >
 	<Hero />
 
-	<section id="work" class="section wrap" aria-labelledby="q-wrong">
+	<section data-snap id="work" class="section wrap" aria-labelledby="q-wrong">
 		<p class="label">The Divine Hima · Dharamshala · 2026</p>
 		<h2 id="q-wrong" class="t-question">Can he find the number that is <em>wrong</em>?</h2>
 		<p class="lede">
@@ -40,7 +40,7 @@ const hasResume = existsSync('public/resume.pdf');
 		</ol>
 	</section>
 
-	<section class="section wrap" aria-labelledby="q-fix">
+	<section data-snap class="section wrap" aria-labelledby="q-fix">
 		<p class="label">Google via Smollan · Aug 2024 to Mar 2026</p>
 		<h2 id="q-fix" class="t-question">Can he build the <em>fix</em>?</h2>
 		<p class="lede">
@@ -63,7 +63,7 @@ const hasResume = existsSync('public/resume.pdf');
 		<p class="note">Also: quarterly intelligence decks from three-plus years of panel data across 33 APAC and EMEA markets.</p>
 	</section>
 
-	<section id="decisions" class="section wrap" aria-labelledby="q-judgement">
+	<section data-snap id="decisions" class="section wrap" aria-labelledby="q-judgement">
 		<p class="label">Decisions</p>
 		<h2 id="q-judgement" class="t-question">Does he have <em>judgement</em>?</h2>
 		<p class="lede">Six times I went against the obvious move.</p>
@@ -78,7 +78,7 @@ const hasResume = existsSync('public/resume.pdf');
 		</ul>
 	</section>
 
-	<section class="section wrap" aria-labelledby="q-unasked">
+	<section data-snap class="section wrap" aria-labelledby="q-unasked">
 		<p class="label">Built on my own time</p>
 		<h2 id="q-unasked" class="t-question">Does he ship <em>unasked</em>?</h2>
 		<ul class="work">
@@ -95,8 +95,8 @@ const hasResume = existsSync('public/resume.pdf');
 			<li class="card">
 				<p class="label">Portfolio Monitor · demo mode</p>
 				<h3>A monthly research note that writes and sends itself.</h3>
-				<a class="poster" href="https://drive.google.com/file/d/1DzwqS973fmBsXSxNxthmFaoQc3jVDo8n/view">
-					<img src="/img/portfolio-monitor.webp" width="960" height="504" loading="lazy" decoding="async" alt="Portfolio Monitor cover. Watch the two-minute walkthrough, demo mode." />
+				<a class="poster glow" style="--glow: url(/img/portfolio-monitor.webp)" href="https://drive.google.com/file/d/1DzwqS973fmBsXSxNxthmFaoQc3jVDo8n/view">
+					<img src="/img/portfolio-monitor.webp" width="1200" height="600" loading="lazy" decoding="async" alt="Portfolio Monitor landing page: A research desk that runs itself, beside a demo-mode run log. Opens the two-minute walkthrough." />
 				</a>
 				<p class="links label">
 					<a href="https://akamaurya.github.io/portfolio-monitor/">Landing page</a>
@@ -124,7 +124,7 @@ const hasResume = existsSync('public/resume.pdf');
 		</ul>
 	</section>
 
-	<section class="section wrap" aria-labelledby="q-truth">
+	<section data-snap class="section wrap" aria-labelledby="q-truth">
 		<p class="label">Gaps</p>
 		<h2 id="q-truth" class="t-question">Will he tell me the <em>truth</em>?</h2>
 		<div class="prose">
@@ -133,14 +133,14 @@ const hasResume = existsSync('public/resume.pdf');
 		</div>
 	</section>
 
-	<section id="writing" class="section wrap" aria-labelledby="q-range">
+	<section data-snap id="writing" class="section wrap" aria-labelledby="q-range">
 		<h2 id="q-range" class="label">Range</h2>
 		<p class="t-sub human">From Himachal, based in Delhi. I lift, run, brew coffee and write poems that sound a thousand years old.</p>
 		<p class="label essay-label">Essay</p>
 		<p class="essay">Inside Google’s Pixel pricing calls: 7 lessons from 20 months</p>
 	</section>
 
-	<section id="contact" class="section wrap ask" aria-labelledby="q-ask">
+	<section data-snap id="contact" class="section wrap ask" aria-labelledby="q-ask">
 		<div>
 			<p class="label">The ask</p>
 			<h2 id="q-ask" class="t-question">Based in Delhi. Available <em>immediately</em>.</h2>
@@ -151,7 +151,9 @@ const hasResume = existsSync('public/resume.pdf');
 			</p>
 		</div>
 		{hasHeadshot && (
-			<img class="headshot" src="/img/headshot.webp" width="360" height="480" loading="lazy" decoding="async" alt="Chander Maurya Kumbkarni" />
+			<span class="headshot glow" style="--glow: url(/img/headshot.webp)">
+				<img src="/img/headshot.webp" width="360" height="480" loading="lazy" decoding="async" alt="Chander Maurya Kumbkarni" />
+			</span>
 		)}
 	</section>
 </Base>
@@ -190,8 +192,7 @@ const hasResume = existsSync('public/resume.pdf');
 	.card p { margin: 0; }
 	.why { color: var(--ink-2); font-size: 0.94rem; }
 
-	.poster { display: block; margin: 0.25rem 0 1rem; }
-	.poster img { width: 100%; border: 1px solid var(--rule); }
+	.poster { margin: 0.25rem 0 1rem; }
 	.links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin-top: 1rem !important; }
 	.links a { color: var(--accent); text-decoration: none; }
 	.links a:hover { text-decoration: underline; }
@@ -200,7 +201,7 @@ const hasResume = existsSync('public/resume.pdf');
 	.phone {
 		width: 140px;
 		aspect-ratio: 9 / 19;
-		margin: 0.5rem 0 0;
+		margin: 0.5rem auto 0;
 		border: 6px solid var(--ink);
 		border-radius: 24px;
 		overflow: hidden;

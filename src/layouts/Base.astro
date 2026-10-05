@@ -24,7 +24,7 @@ const { title, description, noindex = false } = Astro.props;
 	</head>
 	<body>
 		<Paper />
-		<header class="nav wrap">
+		<header data-snap class="nav wrap">
 			<a class="label name" href="/">Chander Maurya Kumbkarni</a>
 			<!-- ponytail: anchors on the home page until /decisions/ and /writing/ exist in Phase 3 -->
 			<nav aria-label="Main">
@@ -76,3 +76,46 @@ const { title, description, noindex = false } = Astro.props;
 	.links a { color: var(--accent); text-decoration: none; }
 	.links a:hover { text-decoration: underline; }
 </style>
+
+<script>
+	// Section snapping on desktop. When a scroll comes to rest with a section edge on screen, glide to that
+	// edge in the direction of travel. Sections taller than the screen still scroll freely inside.
+	// ponytail: native CSS scroll-snap would be zero JS, but it snaps a single mouse-wheel tick straight back
+	// to where it started. Revisit if browsers add directional snapping for wheels.
+	const desktop = '(min-width: 768px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)';
+	if (matchMedia(desktop).matches) {
+		let points: number[] = [];
+		let rest = scrollY;
+		let gliding = false;
+		let timer = 0;
+
+		const measure = () => {
+			const max = document.documentElement.scrollHeight - innerHeight;
+			const tops = [...document.querySelectorAll('[data-snap]')].map((el) => Math.round(el.getBoundingClientRect().top + scrollY));
+			points = [...new Set([...tops.map((t) => Math.min(t, max)), max])].sort((a, b) => a - b);
+		};
+
+		const settle = () => {
+			const y = Math.round(scrollY);
+			const dir = Math.sign(y - rest);
+			rest = y;
+			if (gliding) { gliding = false; return; }
+			if (!dir || points.some((p) => Math.abs(p - y) < 2)) return;
+			const edge = points.find((p) => p > y && p < y + innerHeight); // first section edge on screen
+			if (edge === undefined) return; // mid-way through a long section: leave it alone
+			let target = edge;
+			if (dir < 0) {
+				const prev = points.filter((p) => p < y).at(-1) ?? 0;
+				target = edge - prev <= innerHeight ? prev : edge - innerHeight;
+			}
+			gliding = true;
+			scrollTo({ top: target, behavior: 'smooth' });
+		};
+
+		measure();
+		addEventListener('load', measure);
+		addEventListener('resize', measure);
+		if ('onscrollend' in window) addEventListener('scrollend', settle);
+		else addEventListener('scroll', () => { clearTimeout(timer); timer = window.setTimeout(settle, 120); }, { passive: true });
+	}
+</script>
