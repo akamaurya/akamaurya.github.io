@@ -1,6 +1,6 @@
 ---
 // Hero: first sentence and three numbers, visible before any scroll.
-// Variants (raking light, landscape, mark) are driven by data attributes on <html> until Gate 1 picks.
+// Gate 1: Iowan serif, grain paper, landscape with cursor tie-in, no highlighter.
 // Links on the numbers go in at Phase 2, once the pages they point to exist.
 const numbers = [
 	{ value: '5%', line: 'One vendor in three was quoting without GST, so every cost comparison was off' },
@@ -11,17 +11,6 @@ const strip = { src: '/img/landscape.webp', width: 3200, height: 640 };
 ---
 
 <section class="hero">
-	<!-- Raking light: turbulence lit by a point light at the pointer, bounded to the hero -->
-	<svg class="rake" data-pointer aria-hidden="true">
-		<filter id="rake" x="0" y="0" width="100%" height="100%">
-			<feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3" result="n" />
-			<feDiffuseLighting in="n" surfaceScale="1.6" diffuseConstant="1" lighting-color="#F5F2EA">
-				<fePointLight x="0" y="0" z="40" />
-			</feDiffuseLighting>
-		</filter>
-		<rect width="100%" height="100%" filter="url(#rake)" />
-	</svg>
-
 	<!-- Ink landscape: one pre-rendered strip, two copies side by side so the drift loops -->
 	<div class="land" aria-hidden="true">
 		<div class="track">
@@ -44,7 +33,7 @@ const strip = { src: '/img/landscape.webp', width: 3200, height: 640 };
 		<ul class="numbers">
 			{numbers.map((n) => (
 				<li>
-					<span class="t-number"><span class="value">{n.value}</span></span>
+					<span class="t-number">{n.value}</span>
 					<span class="line">{n.line}</span>
 				</li>
 			))}
@@ -80,6 +69,7 @@ const strip = { src: '/img/landscape.webp', width: 3200, height: 640 };
 		gap: 1rem 1rem;
 	}
 	.numbers li { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; align-items: center; }
+	.t-number { white-space: nowrap; }
 	.line { max-width: 30ch; font-size: 0.88rem; line-height: 1.4; }
 	@media (min-width: 768px) {
 		.body { justify-content: center; }
@@ -88,27 +78,6 @@ const strip = { src: '/img/landscape.webp', width: 3200, height: 640 };
 		.numbers li { grid-column: auto; grid-template-columns: none; align-content: start; gap: 0.4rem; }
 		.line { font-size: 0.94rem; line-height: 1.45; }
 	}
-
-	/* Highlighter mark */
-	:global(html[data-mark='on']) .value {
-		background: linear-gradient(transparent 58%, var(--mark) 58% 90%, transparent 90%);
-	}
-
-	/* Raking light */
-	.rake {
-		position: absolute;
-		inset: 0;
-		width: 100%;
-		height: 100%;
-		display: none;
-		mix-blend-mode: multiply;
-		opacity: 0.6;
-		pointer-events: none;
-		--px: 50%;
-		--py: 40%;
-		mask-image: radial-gradient(circle 300px at var(--px) var(--py), #000 0%, transparent 100%);
-	}
-	:global(html[data-paper='rake']) .rake { display: block; }
 
 	/* Landscape band along the bottom third */
 	.land {
@@ -121,7 +90,6 @@ const strip = { src: '/img/landscape.webp', width: 3200, height: 640 };
 		pointer-events: none;
 		mix-blend-mode: multiply;
 		opacity: 0.45;
-		display: none;
 	}
 	.track {
 		display: flex;
@@ -132,8 +100,6 @@ const strip = { src: '/img/landscape.webp', width: 3200, height: 640 };
 	.track img { height: 100%; width: auto; max-width: none; }
 	@keyframes drift { to { transform: translateX(-50%); } }
 	.hero.offscreen .track { animation-play-state: paused; }
-	:global(html[data-land='on']) .land:not(.land-hot),
-	:global(html[data-land='cursor']) .land { display: block; }
 
 	/* Cursor tie-in: a darker copy of the same strip, revealed near the pointer */
 	.land-hot {
@@ -141,9 +107,6 @@ const strip = { src: '/img/landscape.webp', width: 3200, height: 640 };
 		--px: -999px;
 		--py: -999px;
 		mask-image: radial-gradient(circle 220px at var(--px) var(--py), #000 0%, transparent 100%);
-	}
-	@media (prefers-reduced-motion: reduce) {
-		:global(html[data-paper='rake']) .rake { display: none; }
 	}
 </style>
 

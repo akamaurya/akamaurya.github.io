@@ -1,12 +1,10 @@
 ---
-// Reactive paper layers, fixed to the viewport. The static grain is body::before in global.css.
+// Reactive paper: a stronger copy of the grain, revealed around the pointer. Fixed to the viewport.
+// The static grain is body::before in global.css.
 // ponytail: grain mask is a 2D trick. Upgrade path is a WebGL normal-mapped paper if it ever needs true relief.
 ---
 
-<div class="paper" data-pointer="client" aria-hidden="true">
-	<div class="grain-hot"></div>
-	<div class="bloom"></div>
-</div>
+<div class="paper" data-pointer="client" aria-hidden="true"></div>
 
 <style>
 	.paper {
@@ -14,29 +12,11 @@
 		inset: 0;
 		z-index: -1;
 		pointer-events: none;
-		--px: 50vw;
-		--py: 40vh;
-	}
-	.paper > * { position: absolute; inset: 0; display: none; }
-
-	/* Grain mask: a stronger copy of the grain, revealed around the pointer */
-	.grain-hot {
+		--px: -999px; /* no light until the pointer or the touch drift sets it */
+		--py: -999px;
 		background: url(/img/grain.webp);
 		opacity: 0.9;
 		mask-image: radial-gradient(circle 220px at var(--px) var(--py), #000 0%, transparent 100%);
-	}
-	:global(html[data-paper='grain']) .grain-hot { display: block; }
-
-	/* Ink bloom: a warm multiply tint plus slightly darker grain near the pointer */
-	.bloom {
-		background: radial-gradient(circle 340px at var(--px) var(--py), rgb(196 150 92 / 0.16), transparent 70%);
-		mix-blend-mode: multiply;
-	}
-	:global(html[data-paper='bloom']) .bloom { display: block; }
-	:global(html[data-paper='bloom']) .grain-hot {
-		display: block;
-		opacity: 0.55;
-		mask-image: radial-gradient(circle 160px at var(--px) var(--py), #000 0%, transparent 100%);
 	}
 
 	@media (prefers-reduced-motion: reduce) {
@@ -45,15 +25,12 @@
 </style>
 
 <script>
-	// The only per-frame work for the paper effects. Each [data-pointer] element gets --px and --py in its
-	// own coordinates. Offsets are read on load and resize only, never in the frame.
-	// ponytail: one extra write per frame, the raking light's x and y attributes, because SVG lights
-	// cannot read CSS variables. Drop it with the raking variant if that loses at Gate 1.
+	// The only per-frame work for the paper and the landscape tie-in. Each [data-pointer] element gets
+	// --px and --py in its own coordinates. Offsets are read on load and resize only, never in the frame.
 	const els = [...document.querySelectorAll<HTMLElement>('[data-pointer]')];
-	const lights = els.map((el) => el.querySelector('fePointLight'));
 	let origin: number[][] = [];
 	let w = innerWidth, h = innerHeight;
-	let cx = w / 2, cy = h * 0.4, px = cx, py = cy;
+	let cx = -999, cy = -999, px = -999, py = -999;
 	let queued = false;
 
 	function measure() {
@@ -70,12 +47,8 @@
 		queued = false;
 		els.forEach((el, i) => {
 			const fixed = el.dataset.pointer === 'client';
-			const x = fixed ? cx : px - origin[i][0];
-			const y = fixed ? cy : py - origin[i][1];
-			el.style.setProperty('--px', `${x}px`);
-			el.style.setProperty('--py', `${y}px`);
-			lights[i]?.setAttribute('x', `${x}`);
-			lights[i]?.setAttribute('y', `${y}`);
+			el.style.setProperty('--px', `${fixed ? cx : px - origin[i][0]}px`);
+			el.style.setProperty('--py', `${fixed ? cy : py - origin[i][1]}px`);
 		});
 	}
 

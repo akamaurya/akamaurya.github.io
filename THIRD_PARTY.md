@@ -4,11 +4,9 @@ Code, fonts and assets from other projects that ship with this site, with their 
 
 ## Fonts
 
-Self-hosted through Fontsource. All under the SIL Open Font License 1.1 (https://openfontlicense.org). Full licence text ships in each `@fontsource/*` package.
+Self-hosted through Fontsource. Under the SIL Open Font License 1.1 (https://openfontlicense.org). Full licence text ships in the `@fontsource/ibm-plex-mono` package. Headlines use the system Iowan Old Style stack, so no serif files ship.
 
 - IBM Plex Mono. Copyright 2017 IBM Corp.
-- Newsreader. Copyright 2020 The Newsreader Project Authors. Lab only until Gate 1.
-- Source Serif 4. Copyright Adobe. Lab only until Gate 1.
 
 ## Ink landscape
 
