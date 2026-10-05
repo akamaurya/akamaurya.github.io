@@ -1,0 +1,103 @@
+---
+// Reactive paper layers, fixed to the viewport. The static grain is body::before in global.css.
+// ponytail: grain mask is a 2D trick. Upgrade path is a WebGL normal-mapped paper if it ever needs true relief.
+---
+
+<div class="paper" data-pointer="client" aria-hidden="true">
+	<div class="grain-hot"></div>
+	<div class="bloom"></div>
+</div>
+
+<style>
+	.paper {
+		position: fixed;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		--px: 50vw;
+		--py: 40vh;
+	}
+	.paper > * { position: absolute; inset: 0; display: none; }
+
+	/* Grain mask: a stronger copy of the grain, revealed around the pointer */
+	.grain-hot {
+		background: url(/img/grain.webp);
+		opacity: 0.9;
+		mask-image: radial-gradient(circle 220px at var(--px) var(--py), #000 0%, transparent 100%);
+	}
+	:global(html[data-paper='grain']) .grain-hot { display: block; }
+
+	/* Ink bloom: a warm multiply tint plus slightly darker grain near the pointer */
+	.bloom {
+		background: radial-gradient(circle 340px at var(--px) var(--py), rgb(196 150 92 / 0.16), transparent 70%);
+		mix-blend-mode: multiply;
+	}
+	:global(html[data-paper='bloom']) .bloom { display: block; }
+	:global(html[data-paper='bloom']) .grain-hot {
+		display: block;
+		opacity: 0.55;
+		mask-image: radial-gradient(circle 160px at var(--px) var(--py), #000 0%, transparent 100%);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.paper { display: none; }
+	}
+</style>
+
+<script>
+	// The only per-frame work for the paper effects. Each [data-pointer] element gets --px and --py in its
+	// own coordinates. Offsets are read on load and resize only, never in the frame.
+	// ponytail: one extra write per frame, the raking light's x and y attributes, because SVG lights
+	// cannot read CSS variables. Drop it with the raking variant if that loses at Gate 1.
+	const els = [...document.querySelectorAll<HTMLElement>('[data-pointer]')];
+	const lights = els.map((el) => el.querySelector('fePointLight'));
+	let origin: number[][] = [];
+	let w = innerWidth, h = innerHeight;
+	let cx = w / 2, cy = h * 0.4, px = cx, py = cy;
+	let queued = false;
+
+	function measure() {
+		w = innerWidth; h = innerHeight;
+		origin = els.map((el) => {
+			if (el.dataset.pointer === 'client') return [0, 0];
+			const r = el.getBoundingClientRect();
+			return [r.left + scrollX, r.top + scrollY];
+		});
+		write();
+	}
+
+	function write() {
+		queued = false;
+		els.forEach((el, i) => {
+			const fixed = el.dataset.pointer === 'client';
+			const x = fixed ? cx : px - origin[i][0];
+			const y = fixed ? cy : py - origin[i][1];
+			el.style.setProperty('--px', `${x}px`);
+			el.style.setProperty('--py', `${y}px`);
+			lights[i]?.setAttribute('x', `${x}`);
+			lights[i]?.setAttribute('y', `${y}`);
+		});
+	}
+
+	// Touch and no-hover devices: a slow autonomous drift on a 40 second loop.
+	function drift(t: number) {
+		const a = (t / 40000) * 2 * Math.PI;
+		cx = px = w * (0.5 + 0.35 * Math.sin(a));
+		cy = py = h * (0.4 + 0.2 * Math.sin(2 * a));
+		write();
+		requestAnimationFrame(drift);
+	}
+
+	if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		measure();
+		addEventListener('resize', measure);
+		if (matchMedia('(hover: none)').matches) {
+			requestAnimationFrame(drift);
+		} else {
+			addEventListener('pointermove', (e) => {
+				cx = e.clientX; cy = e.clientY; px = e.pageX; py = e.pageY;
+				if (!queued) { queued = true; requestAnimationFrame(write); }
+			}, { passive: true });
+		}
+	}
+</script>

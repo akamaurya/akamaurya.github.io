@@ -1,0 +1,76 @@
+---
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '../styles/global.css';
+import Paper from '../components/Paper.astro';
+
+interface Props {
+	title: string;
+	description?: string;
+	noindex?: boolean;
+}
+const { title, description, noindex = false } = Astro.props;
+// ponytail: canonical, Open Graph and JSON-LD arrive in Phase 5.
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title}</title>
+		{description && <meta name="description" content={description} />}
+		{noindex && <meta name="robots" content="noindex" />}
+	</head>
+	<body>
+		<Paper />
+		<header class="nav wrap">
+			<a class="label name" href="/">Chander Maurya Kumbkarni</a>
+			<!-- ponytail: anchors on the home page until /decisions/ and /writing/ exist in Phase 3 -->
+			<nav aria-label="Main">
+				<a class="label" href="/#work">Work</a>
+				<a class="label" href="/#decisions">Decisions</a>
+				<a class="label" href="/#writing">Writing</a>
+				<a class="label" href="/#contact">Contact</a>
+			</nav>
+		</header>
+		<main>
+			<slot />
+		</main>
+		<footer class="foot wrap">
+			<p>From Himachal, based in Delhi. I lift, run, brew coffee and write poems that sound a thousand years old.</p>
+			<p class="label links">
+				<a href="mailto:mkumbkarni@gmail.com">Email</a>
+				<a href="https://linkedin.com/in/mkumbkarni">LinkedIn</a>
+				<a href="https://github.com/akamaurya">GitHub</a>
+			</p>
+			<slot name="credits" />
+		</footer>
+	</body>
+</html>
+
+<style>
+	.nav {
+		min-height: var(--nav-h);
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.25rem 1.5rem;
+		padding-block: 0.75rem;
+	}
+	.nav a { text-decoration: none; }
+	.nav nav { display: flex; flex-wrap: wrap; gap: 0 1.25rem; }
+	.nav nav a { color: var(--ink-2); }
+	.nav nav a:hover { color: var(--accent); }
+
+	.foot {
+		border-top: 1px solid var(--rule);
+		padding-block: 2.5rem 3rem;
+		font-size: 0.94rem;
+	}
+	.foot p { margin: 0 0 1rem; }
+	.links { display: flex; flex-wrap: wrap; gap: 0 1.25rem; }
+	.links a { color: var(--accent); text-decoration: none; }
+	.links a:hover { text-decoration: underline; }
+</style>

@@ -1,0 +1,85 @@
+---
+// Phase 1 prototype. noindex. Gate 1 picks one option per row; the losing code and fonts get deleted.
+import '@fontsource/newsreader/400.css';
+import '@fontsource/newsreader/400-italic.css';
+import '@fontsource/source-serif-4/400.css';
+import '@fontsource/source-serif-4/400-italic.css';
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+
+const rows = [
+	{ name: 'serif', label: 'Headline serif', options: [['iowan', 'Iowan stack'], ['newsreader', 'Newsreader'], ['source', 'Source Serif 4']] },
+	{ name: 'paper', label: 'Paper effect', options: [['off', 'Off'], ['grain', 'Grain mask'], ['rake', 'Raking light'], ['bloom', 'Ink bloom']] },
+	{ name: 'land', label: 'Ink landscape', options: [['off', 'Off'], ['on', 'On'], ['cursor', 'On, cursor tie-in']] },
+	{ name: 'mark', label: 'Highlighter', options: [['off', 'Off'], ['on', 'On']] },
+];
+const defaults: Record<string, string> = { serif: 'iowan', paper: 'grain', land: 'on', mark: 'off' };
+---
+
+<Base title="Hero lab" noindex>
+	<Hero />
+	<details class="lab">
+		<summary class="label">Lab controls</summary>
+		<form id="lab">
+			{rows.map((r) => (
+				<fieldset>
+					<legend class="label">{r.label}</legend>
+					{r.options.map(([value, text]) => (
+						<label>
+							<input type="radio" name={r.name} value={value} checked={defaults[r.name] === value} /> {text}
+						</label>
+					))}
+				</fieldset>
+			))}
+			<p class="t-data">Settings are in the address bar. Copy it to share.</p>
+		</form>
+	</details>
+	<p slot="credits" class="t-data">
+		Ink landscape generated with <a href="https://github.com/LingDong-/shan-shui-inf">shan-shui-inf</a> by Lingdong Huang, MIT licence.
+	</p>
+</Base>
+
+<style is:global>
+	html[data-serif='newsreader'] { --serif: 'Newsreader', Georgia, serif; }
+	html[data-serif='source'] { --serif: 'Source Serif 4', Georgia, serif; }
+</style>
+
+<style>
+	.lab {
+		position: fixed;
+		right: 12px;
+		bottom: 12px;
+		z-index: 10;
+		max-width: min(320px, calc(100vw - 24px));
+		background: var(--sheet);
+		border: 1px solid var(--rule);
+		padding: 0.6rem 0.9rem;
+		font-size: 0.85rem;
+	}
+	summary { cursor: pointer; }
+	fieldset { border: 0; padding: 0; margin: 0.75rem 0 0; }
+	legend { padding: 0; margin-bottom: 0.25rem; }
+	label { display: inline-flex; gap: 0.3rem; margin-right: 0.75rem; white-space: nowrap; }
+	.lab p { margin: 0.75rem 0 0; }
+</style>
+
+<script>
+	// Lab only: radio state -> data attributes on <html> and the query string, so a setting is a shareable link.
+	const form = document.querySelector<HTMLFormElement>('#lab')!;
+	const root = document.documentElement;
+	const keys = ['serif', 'paper', 'land', 'mark'];
+
+	for (const [k, v] of new URLSearchParams(location.search)) {
+		const input = keys.includes(k) && form.querySelector<HTMLInputElement>(`[name="${k}"][value="${CSS.escape(v)}"]`);
+		if (input) input.checked = true;
+	}
+
+	function apply() {
+		const data = new FormData(form);
+		for (const k of keys) root.dataset[k] = String(data.get(k));
+		history.replaceState(null, '', `?${new URLSearchParams(data as unknown as Record<string, string>)}`);
+		dispatchEvent(new Event('resize')); // newly shown layers need their offsets measured
+	}
+	form.addEventListener('change', apply);
+	apply();
+</script>

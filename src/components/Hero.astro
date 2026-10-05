@@ -1,0 +1,156 @@
+---
+// Hero: first sentence and three numbers, visible before any scroll.
+// Variants (raking light, landscape, mark) are driven by data attributes on <html> until Gate 1 picks.
+// Links on the numbers go in at Phase 2, once the pages they point to exist.
+const numbers = [
+	{ value: '5%', line: 'One vendor in three was quoting without GST, so every cost comparison was off' },
+	{ value: '1 of 12', line: 'Shelf slots in stock for a protein brand’s launch, found unasked' },
+	{ value: '₹0.00', line: 'Gap between the ledger I built and two card statements' },
+];
+const strip = { src: '/img/landscape.webp', width: 3200, height: 640 };
+---
+
+<section class="hero">
+	<!-- Raking light: turbulence lit by a point light at the pointer, bounded to the hero -->
+	<svg class="rake" data-pointer aria-hidden="true">
+		<filter id="rake" x="0" y="0" width="100%" height="100%">
+			<feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3" result="n" />
+			<feDiffuseLighting in="n" surfaceScale="1.6" diffuseConstant="1" lighting-color="#F5F2EA">
+				<fePointLight x="0" y="0" z="40" />
+			</feDiffuseLighting>
+		</filter>
+		<rect width="100%" height="100%" filter="url(#rake)" />
+	</svg>
+
+	<!-- Ink landscape: one pre-rendered strip, two copies side by side so the drift loops -->
+	<div class="land" aria-hidden="true">
+		<div class="track">
+			<img {...strip} alt="" decoding="async" fetchpriority="low" />
+			<img {...strip} alt="" decoding="async" fetchpriority="low" />
+		</div>
+	</div>
+	<div class="land land-hot" data-pointer aria-hidden="true">
+		<div class="track">
+			<img {...strip} alt="" decoding="async" fetchpriority="low" />
+			<img {...strip} alt="" decoding="async" fetchpriority="low" />
+		</div>
+	</div>
+
+	<div class="wrap body">
+		<h1 class="t-hero">
+			I worked on Google’s Pixel pricing through Smollan, then on a hotel’s costs in Dharamshala. I am looking
+			for a Founder’s Office role that brings together <em>everything</em> I have learnt.
+		</h1>
+		<ul class="numbers">
+			{numbers.map((n) => (
+				<li>
+					<span class="t-number"><span class="value">{n.value}</span></span>
+					<span class="line">{n.line}</span>
+				</li>
+			))}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.hero {
+		position: relative;
+		min-height: calc(100svh - var(--nav-h));
+		display: flex;
+		overflow: clip;
+	}
+	.body {
+		position: relative;
+		z-index: 1;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: clamp(1.5rem, 5vh, 4rem);
+		padding-block: 1.25rem 2rem;
+	}
+	h1 { margin: 0; max-width: 27ch; }
+
+	/* Phones: number beside its line, so all three fit above the fold */
+	.numbers {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: max-content 1fr;
+		gap: 1rem 1rem;
+	}
+	.numbers li { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; align-items: center; }
+	.line { max-width: 30ch; font-size: 0.88rem; line-height: 1.4; }
+	@media (min-width: 768px) {
+		.body { justify-content: center; }
+		/* Columns sized to content: "1 of 12" at 6vw is wider than a third of the page */
+		.numbers { grid-template-columns: repeat(3, auto); justify-content: space-between; gap: 2rem; }
+		.numbers li { grid-column: auto; grid-template-columns: none; align-content: start; gap: 0.4rem; }
+		.line { font-size: 0.94rem; line-height: 1.45; }
+	}
+
+	/* Highlighter mark */
+	:global(html[data-mark='on']) .value {
+		background: linear-gradient(transparent 58%, var(--mark) 58% 90%, transparent 90%);
+	}
+
+	/* Raking light */
+	.rake {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		display: none;
+		mix-blend-mode: multiply;
+		opacity: 0.6;
+		pointer-events: none;
+		--px: 50%;
+		--py: 40%;
+		mask-image: radial-gradient(circle 300px at var(--px) var(--py), #000 0%, transparent 100%);
+	}
+	:global(html[data-paper='rake']) .rake { display: block; }
+
+	/* Landscape band along the bottom third */
+	.land {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 36%;
+		overflow: hidden;
+		pointer-events: none;
+		mix-blend-mode: multiply;
+		opacity: 0.45;
+		display: none;
+	}
+	.track {
+		display: flex;
+		width: max-content;
+		height: 100%;
+		animation: drift 240s linear infinite;
+	}
+	.track img { height: 100%; width: auto; max-width: none; }
+	@keyframes drift { to { transform: translateX(-50%); } }
+	.hero.offscreen .track { animation-play-state: paused; }
+	:global(html[data-land='on']) .land:not(.land-hot),
+	:global(html[data-land='cursor']) .land { display: block; }
+
+	/* Cursor tie-in: a darker copy of the same strip, revealed near the pointer */
+	.land-hot {
+		opacity: 0.6;
+		--px: -999px;
+		--py: -999px;
+		mask-image: radial-gradient(circle 220px at var(--px) var(--py), #000 0%, transparent 100%);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		:global(html[data-paper='rake']) .rake { display: none; }
+	}
+</style>
+
+<script>
+	// Pause the landscape drift while the hero is off screen.
+	const hero = document.querySelector('.hero');
+	if (hero) {
+		new IntersectionObserver(([e]) => hero.classList.toggle('offscreen', !e.isIntersecting)).observe(hero);
+	}
+</script>
