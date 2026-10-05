@@ -17,7 +17,7 @@ const hasResume = existsSync('public/resume.pdf');
 >
 	<Hero />
 
-	<section data-snap id="work" class="section wrap" aria-labelledby="q-wrong">
+	<section id="work" class="section wrap" aria-labelledby="q-wrong">
 		<p class="label">The Divine Hima · Dharamshala · 2026</p>
 		<h2 id="q-wrong" class="t-question">Can he find the number that is <em>wrong</em>?</h2>
 		<p class="lede">
@@ -40,7 +40,7 @@ const hasResume = existsSync('public/resume.pdf');
 		</ol>
 	</section>
 
-	<section data-snap class="section wrap" aria-labelledby="q-fix">
+	<section class="section wrap" aria-labelledby="q-fix">
 		<p class="label">Google via Smollan · Aug 2024 to Mar 2026</p>
 		<h2 id="q-fix" class="t-question">Can he build the <em>fix</em>?</h2>
 		<p class="lede">
@@ -63,7 +63,7 @@ const hasResume = existsSync('public/resume.pdf');
 		<p class="note">Also: quarterly intelligence decks from three-plus years of panel data across 33 APAC and EMEA markets.</p>
 	</section>
 
-	<section data-snap id="decisions" class="section wrap" aria-labelledby="q-judgement">
+	<section id="decisions" class="section wrap" aria-labelledby="q-judgement">
 		<p class="label">Decisions</p>
 		<h2 id="q-judgement" class="t-question">Does he have <em>judgement</em>?</h2>
 		<p class="lede">Six times I went against the obvious move.</p>
@@ -78,7 +78,7 @@ const hasResume = existsSync('public/resume.pdf');
 		</ul>
 	</section>
 
-	<section data-snap class="section wrap" aria-labelledby="q-unasked">
+	<section class="section wrap" aria-labelledby="q-unasked">
 		<p class="label">Built on my own time</p>
 		<h2 id="q-unasked" class="t-question">Does he ship <em>unasked</em>?</h2>
 		<ul class="work">
@@ -124,7 +124,7 @@ const hasResume = existsSync('public/resume.pdf');
 		</ul>
 	</section>
 
-	<section data-snap class="section wrap" aria-labelledby="q-truth">
+	<section class="section wrap" aria-labelledby="q-truth">
 		<p class="label">Gaps</p>
 		<h2 id="q-truth" class="t-question">Will he tell me the <em>truth</em>?</h2>
 		<div class="prose">
@@ -133,14 +133,14 @@ const hasResume = existsSync('public/resume.pdf');
 		</div>
 	</section>
 
-	<section data-snap id="writing" class="section wrap" aria-labelledby="q-range">
+	<section id="writing" class="section wrap" aria-labelledby="q-range">
 		<h2 id="q-range" class="label">Range</h2>
 		<p class="t-sub human">From Himachal, based in Delhi. I lift, run, brew coffee and write poems that sound a thousand years old.</p>
 		<p class="label essay-label">Essay</p>
 		<p class="essay">Inside Google’s Pixel pricing calls: 7 lessons from 20 months</p>
 	</section>
 
-	<section data-snap id="contact" class="section wrap ask" aria-labelledby="q-ask">
+	<section id="contact" class="section wrap ask" aria-labelledby="q-ask">
 		<div>
 			<p class="label">The ask</p>
 			<h2 id="q-ask" class="t-question">Based in Delhi. Available <em>immediately</em>.</h2>
@@ -162,6 +162,7 @@ const hasResume = existsSync('public/resume.pdf');
 	.section {
 		padding-block: clamp(4rem, 12vh, 8rem);
 		border-top: 1px solid var(--rule);
+		scroll-snap-align: start;
 	}
 	.section > .label { margin: 0 0 0.75rem; }
 	h2 { margin: 0 0 1.25rem; max-width: 24ch; }
