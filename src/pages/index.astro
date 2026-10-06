@@ -158,6 +158,25 @@ const hasResume = existsSync('public/resume.pdf');
 	</section>
 </Base>
 
+<script>
+	// Scroll speed curve: wheel moves faster across section boundaries, slower while a section holds the screen.
+	// ponytail: wheel only. Touch, keyboard and scrollbar scroll at native speed; add touch handling if phones need it too.
+	const SLOW = 0.3; // at mid-section. Tune by feel.
+	const FAST = 2; // with a boundary at mid-screen.
+	const sections = document.querySelectorAll<HTMLElement>('main .section');
+	if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		addEventListener('wheel', (e) => {
+			if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; // leave pinch-zoom and sideways swipes alone
+			const mid = innerHeight / 2;
+			const near = Math.min(...[...sections].map((s) => Math.abs(s.getBoundingClientRect().top - mid)));
+			const t = Math.min(near / mid, 1);
+			const k = FAST + (SLOW - FAST) * t * t * (3 - 2 * t); // smoothstep: fast at a boundary, easing to slow
+			e.preventDefault();
+			scrollBy(0, e.deltaY * (e.deltaMode === 1 ? 16 : 1) * k);
+		}, { passive: false });
+	}
+</script>
+
 <style>
 	.section {
 		padding-block: clamp(4rem, 12vh, 8rem);
