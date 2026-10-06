@@ -134,16 +134,21 @@ const hasResume = existsSync('public/resume.pdf');
 	</section>
 
 	<section id="writing" class="section wrap" aria-labelledby="q-range">
-		<h2 id="q-range" class="label">Range</h2>
-		<p class="t-sub human">
-			from himachal, based in delhi<br />
-			hiker, writer, tinkerer,<br />
-			curiosity my ferry,<br />
-			to shores unknown through endless seas.<br />
-			for i’ve got miles to go before I sleep.
-		</p>
-		<p class="label essay-label">Essay</p>
-		<p class="essay">What 20 months of building pricing dashboards taught me: 7 lessons</p>
+		<h2 id="q-range" class="label">Writing</h2>
+		<ul class="writing">
+			<li>
+				<p class="label">Essay</p>
+				<p class="essay">What 20 months of building pricing dashboards taught me: 7 lessons</p>
+			</li>
+			<li>
+				<p class="label">LinkedIn article</p>
+				<a class="essay" href="https://www.linkedin.com/pulse/best-investment-research-kind-you-never-have-do-kumbkarni-g6o6c/">The best investment research is the kind you never have to do</a>
+			</li>
+			<li>
+				<p class="label">LinkedIn article</p>
+				<a class="essay" href="https://www.linkedin.com/pulse/india-soft-power-evolving-battlefield-diplomacy-kumbkarni-e6txc/">India, Soft Power and the Evolving Battlefield of Diplomacy</a>
+			</li>
+		</ul>
 	</section>
 
 	<section id="contact" class="section wrap ask" aria-labelledby="q-ask">
@@ -253,15 +258,18 @@ const hasResume = existsSync('public/resume.pdf');
 	.prose p { margin: 0 0 1.25rem; }
 	.prose strong { color: var(--ink); }
 
-	.human { max-width: 40ch; margin: 1rem 0 2.5rem; }
-	.essay-label { margin: 0 0 0.5rem; }
-	.essay { font: 400 1.25rem/1.3 var(--serif); color: var(--ink); margin: 0; }
+	.writing { list-style: none; margin: 1.5rem 0 0; padding: 0; display: grid; gap: 1.75rem; }
+	.writing .label { margin: 0 0 0.5rem; }
+	.essay { display: block; font: 400 1.25rem/1.3 var(--serif); color: var(--ink); margin: 0; max-width: 40ch; }
+	a.essay { text-decoration: none; }
+	a.essay:hover { color: var(--accent); text-decoration: underline; }
 
 	.ask { display: grid; gap: 2.5rem; align-items: end; }
 	.where { margin: 0; }
 	.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; margin: 2rem 0 0; }
 	.actions .label { color: var(--accent); }
 	.button {
+		text-shadow: none;
 		display: inline-block;
 		padding: 0.85rem 1.4rem;
 		background: var(--accent);

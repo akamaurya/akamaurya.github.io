@@ -29,6 +29,8 @@ body {
 	background: var(--paper);
 	color: var(--ink-2);
 	font: 400 1.03rem/1.6 var(--sans);
+	/* Soft paper halo behind every glyph, so the pointer grain and the landscape never sit under the text */
+	text-shadow: 0 0 4px var(--paper), 0 0 10px var(--paper), 0 0 18px var(--paper);
 }
 
 /* Static paper grain, always on. Tile made once with:
