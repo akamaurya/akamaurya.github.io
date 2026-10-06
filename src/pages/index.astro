@@ -160,6 +160,7 @@ const hasResume = existsSync('public/resume.pdf');
 				<!-- ponytail: Gmail compose works without a desktop mail app; the address beside it covers other mail clients -->
 				<a class="button" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=mkumbkarni@gmail.com" target="_blank" rel="noopener">Email me</a>
 				<a class="label" href="mailto:mkumbkarni@gmail.com">mkumbkarni@gmail.com</a>
+				<button class="label copy" type="button" data-copy="mkumbkarni@gmail.com" aria-live="polite" hidden>Copy</button>
 				<a class="label" href="https://linkedin.com/in/mkumbkarni">LinkedIn</a>
 				{hasResume && <a class="label" href="/resume.pdf">Resume</a>}
 			</p>
@@ -171,6 +172,25 @@ const hasResume = existsSync('public/resume.pdf');
 		)}
 	</section>
 </Base>
+
+<script>
+	// Copy button: hidden in the markup, shown only when the clipboard API exists, so it never sits there dead.
+	const copy = document.querySelector<HTMLButtonElement>('[data-copy]');
+	if (copy && navigator.clipboard) {
+		copy.hidden = false;
+		copy.addEventListener('click', async () => {
+			try {
+				await navigator.clipboard.writeText(copy.dataset.copy!);
+				copy.textContent = 'Copied';
+			} catch {
+				// Clipboard refused (permissions, embedded frames): select the address so a keyboard copy works.
+				getSelection()?.selectAllChildren(copy.previousElementSibling!);
+				copy.textContent = 'Selected';
+			}
+			setTimeout(() => (copy.textContent = 'Copy'), 1500);
+		});
+	}
+</script>
 
 <script>
 	// Scroll speed curve: wheel moves faster across section boundaries, slower while a section holds the screen.
@@ -270,6 +290,9 @@ const hasResume = existsSync('public/resume.pdf');
 	.where { margin: 0; }
 	.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; margin: 2rem 0 0; }
 	.actions .label { color: var(--accent); }
+	.actions a[href^="mailto"] { text-transform: none; letter-spacing: 0.02em; }
+	.copy { background: none; border: 1px solid var(--ink-3); padding: 0.35rem 0.6rem; cursor: pointer; }
+	.copy:hover { border-color: var(--accent); }
 	.button {
 		text-shadow: none;
 		display: inline-block;
