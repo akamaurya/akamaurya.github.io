@@ -157,7 +157,9 @@ const hasResume = existsSync('public/resume.pdf');
 			<h2 id="q-ask" class="t-question">Based in Delhi. Available <em>immediately</em>.</h2>
 			<p class="where">Bengaluru or Delhi preferred. Open to relocating anywhere in India or abroad.</p>
 			<p class="actions">
-				<a class="button" href="mailto:mkumbkarni@gmail.com">Email me</a>
+				<!-- ponytail: Gmail compose works without a desktop mail app; the address beside it covers other mail clients -->
+				<a class="button" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=mkumbkarni@gmail.com" target="_blank" rel="noopener">Email me</a>
+				<a class="label" href="mailto:mkumbkarni@gmail.com">mkumbkarni@gmail.com</a>
 				<a class="label" href="https://linkedin.com/in/mkumbkarni">LinkedIn</a>
 				{hasResume && <a class="label" href="/resume.pdf">Resume</a>}
 			</p>
