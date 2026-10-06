@@ -1,5 +1,5 @@
 // One entry per decision. Format on the page: the obvious move, what I did, why.
-// ponytail: eight of the eleven so far. The rest arrive with /decisions/ in Phase 3.
+// ponytail: seven of the ten so far. The rest arrive with /decisions/ in Phase 3.
 export interface Decision {
 	id: string;
 	title: string;
@@ -37,15 +37,6 @@ export const decisions: Decision[] = [
 		did: 'Read the response headers first. Found three cache layers in front of the site, and left it off.',
 		why: 'The site already forced HTTPS. On that stack the new rule would have looped forever and taken the admin panel down with the site.',
 		homeCard: true,
-	},
-	{
-		id: 'hiring-budget',
-		title: 'Cut my own hiring budget by nearly a third, ten days after recommending it',
-		source: 'The Divine Hima',
-		obvious: 'Stand by the number I had already recommended.',
-		did: 'Cut the base salary in my own recommendation by nearly a third, and retitled the role to match the pay.',
-		why: 'TODO: Chander to supply the reason for the cut. The source note records the change, not the reason.',
-		homeCard: false,
 	},
 	{
 		id: 'loadbuddy-one-screen',
