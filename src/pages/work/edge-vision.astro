@@ -1,0 +1,342 @@
+---
+import Base from '../../layouts/Base.astro';
+// Source: github.com/akamaurya/edge-vision-adaptation-test README (private repo, so no code link yet).
+
+// The belt loops every 12 s and moves 640 px, so a new slot passes under the camera every 3 s.
+// Slot pattern: padlock, empty, whisk, empty. Eight copies cover the visible belt at every point of the loop.
+const slots = Array.from({ length: 8 }, (_, k) => ({ x: -480 + 160 * k, kind: ['lock', 'empty', 'whisk', 'empty'][k % 4] }));
+// What the fast classifier says as each slot passes. `at` is the second in the 12 s loop it sits under the lens.
+const reads = [
+	{ at: 0, p: '0.03', say: 'empty' },
+	{ at: 3, p: '0.98', say: 'part' },
+	{ at: 6, p: '0.02', say: 'empty' },
+	{ at: 9, p: '0.54', say: 'unsure: ask the checker', unsure: true },
+];
+---
+
+<Base
+	title="Edge vision test · Chander Maurya Kumbkarni"
+	description="Can a factory camera system learn a new part by refitting 769 numbers in milliseconds, instead of retraining a detector on a GPU? A three day test on a phone, a steel tray and a cloud GPU."
+>
+	<section class="section wrap top" aria-labelledby="q-title">
+		<p class="label">Edge vision test · Sep 2026</p>
+		<h1 id="q-title" class="t-question">Can a factory camera learn a new part in <em>milliseconds</em>?</h1>
+		<p class="lede">
+			A three day test, built on a phone, a steel tray and a cloud GPU. It started as a take-home brief in a final
+			round interview for an operations role. The company is not named and none of this is their data. Every frame
+			was filmed at home.
+		</p>
+
+		<figure class="belt">
+			<svg viewBox="0 0 640 280" role="img" aria-labelledby="belt-t">
+				<title id="belt-t">
+					Hand-drawn animation: a camera above a conveyor belt reads each tray as it passes. Padlocks score as a
+					part, empty slots as empty, and the unfamiliar whisk scores 0.54, so it goes to the checker.
+				</title>
+				<defs>
+					{[1, 2, 3].map((seed) => (
+						<filter id={`ink-${seed}`} x="-2%" y="-2%" width="104%" height="104%">
+							<feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed={seed} />
+							<feDisplacementMap in="SourceGraphic" scale="3" xChannelSelector="R" yChannelSelector="G" />
+						</filter>
+					))}
+					<clipPath id="on-belt"><rect x="78" y="0" width="484" height="280" /></clipPath>
+				</defs>
+
+				<!-- Everything inside .ink wobbles: three noise seeds swapped a few times a second, like redrawn frames -->
+				<g class="ink">
+					<!-- Ceiling and camera, looking down at the tray -->
+					<path d="M232 14 H408 M246 14 l-8 -8 M270 14 l-8 -8 M294 14 l-8 -8 M318 14 l-8 -8 M342 14 l-8 -8 M366 14 l-8 -8 M390 14 l-8 -8" />
+					<path d="M320 14 V42" />
+					<!-- The camera turns on its rod to follow the pointer: see the script below -->
+					<g class="cam">
+						<rect x="294" y="42" width="52" height="30" rx="5" class="fill" />
+						<rect x="311" y="72" width="18" height="9" rx="2" class="fill" />
+						<path class="cone" d="M313 82 L276 176 H364 L327 82 Z" />
+						<circle class="led" cx="335" cy="52" r="3" />
+					</g>
+
+					<!-- Cable to the edge box. The dashes march toward the box: frames going out -->
+					<path class="cable" d="M346 57 C 420 57, 440 44, 520 44" />
+					<rect x="520" y="26" width="92" height="40" rx="4" class="fill" />
+					<circle class="checker" cx="598" cy="38" r="4" />
+
+					<!-- Belt: frame, rollers, legs, floor -->
+					<path d="M100 180 H540 A20 20 0 0 1 540 220 H100 A20 20 0 0 1 100 180 Z" class="fill" />
+					<path class="tread" d="M104 190 H536" />
+					<path class="tread back" d="M104 211 H536" />
+					{[100, 540].map((cx) => (
+						<g class="roller">
+							<circle cx={cx} cy="200" r="13" class="fill" />
+							<path d={`M${cx - 9} 200 H${cx + 9} M${cx} 191 V209`} />
+						</g>
+					))}
+					<path d="M140 220 L130 262 M150 220 L160 262 M500 220 L490 262 M510 220 L520 262" />
+					<path d="M40 262 H600 M60 268 H120 M420 268 H560" />
+
+					<!-- Trays moving right -->
+					<g clip-path="url(#on-belt)">
+						<g class="slots">
+							{slots.map((s) => (
+								<g transform={`translate(${s.x} 0)`}>
+									{s.kind === 'lock' && (
+										<>
+											<path d="M-8 160 V151 A8 8 0 0 1 8 151 V160" />
+											<rect x="-13" y="158" width="26" height="22" rx="3" class="fill" />
+											<path d="M0 166 V173" />
+										</>
+									)}
+									{s.kind === 'whisk' && (
+										<>
+											<rect x="-30" y="165" width="22" height="7" rx="3.5" class="fill" />
+											<path d="M-8 168 C 4 155, 30 155, 30 168 C 30 179, 4 179, -8 168 M-8 168 C 6 162, 25 162, 25 168 C 25 174, 6 174, -8 168 M-8 168 H30" />
+										</>
+									)}
+								</g>
+							))}
+						</g>
+					</g>
+				</g>
+
+				<!-- Labels stay crisp: outside the wobble -->
+				<text x="566" y="50" text-anchor="middle" class="tag">EDGE BOX</text>
+				<text x="566" y="84" text-anchor="middle" class="tag">10 cameras</text>
+				{reads.map((r) => (
+					<g class={`read${r.unsure ? ' unsure' : ''}${r.at === 0 ? ' still' : ''}`} style={`animation-delay: -${(12 - r.at) % 12}s`}>
+						<text x="40" y="104">P(part) {r.p}</text>
+						<text x="40" y="124" class="say">{r.say}</text>
+					</g>
+				))}
+				<!-- What the camera makes of the pointer: a crop box and its reading -->
+				<g class="you" aria-hidden="true">
+					<rect class="crop" x="-18" y="-18" width="36" height="36" />
+					<text x="26" y="-6">P(part) 0.50</text>
+					<text x="26" y="14" class="say">unsure: ask the checker</text>
+				</g>
+			</svg>
+			<figcaption class="t-data">
+				One camera of ten. A fast classifier reads every frame. When it is unsure, the frame goes to a small vision
+				language model, the checker.
+			</figcaption>
+		</figure>
+	</section>
+
+	<section class="section wrap" aria-labelledby="q-idea">
+		<p class="label">The idea</p>
+		<h2 id="q-idea" class="t-question">Freeze the big model. Relearn only <em>769</em> numbers.</h2>
+		<p class="lede">
+			Factory camera systems often run fine-tuned detectors. They are accurate but static: every new part, light or
+			layout means new images, new labels and a full retrain on a GPU. Here a frozen image encoder turns each frame
+			into 768 numbers, and a tiny layer on top (768 weights and one offset) decides if a part is on the tray. Only
+			that layer ever learns.
+		</p>
+		<ol class="steps">
+			<li>
+				<span class="figure">7 ms</span>
+				<p>A new part needed 5 labels either way. Then a 7 ms refit on a CPU, against a 26 second GPU retrain.</p>
+			</li>
+			<li>
+				<span class="figure">76 ms vs 498 ms</span>
+				<p>Same model, same frames. Picking Yes or No took 76 ms. Writing a 60 token answer took 498 ms. Deciding fits on an edge box. Writing does not.</p>
+			</li>
+			<li>
+				<span class="figure">22 to 38%</span>
+				<p>Estimated share of one edge GPU for 10 cameras at 0.5 frames per second, checker included. Estimated from published specs, not measured on the box.</p>
+			</li>
+		</ol>
+	</section>
+
+	<section class="section wrap" aria-labelledby="q-gate">
+		<p class="label">The checks</p>
+		<h2 id="q-gate" class="t-question">The ship gate rejected my <em>own</em> model.</h2>
+		<p class="lede">
+			A new version goes live only if no cell of a fixed, people-labelled test set gets worse. My fast classifier,
+			which had never seen the new part, averaged 90.7%. It was a coin flip on one cell, so it did not ship.
+		</p>
+		<div class="scroll">
+			<table>
+				<caption class="t-data">Accuracy, %, on "is there a part on the tray?"</caption>
+				<thead>
+					<tr><th scope="col">Cell</th><th scope="col">YOLO stand-in</th><th scope="col">Fast classifier</th></tr>
+				</thead>
+				<tbody>
+					<tr><th scope="row">Day, old part</th><td>100</td><td>100</td></tr>
+					<tr><th scope="row">Day, new part</th><td>98</td><td>98</td></tr>
+					<tr><th scope="row">Day, empty</th><td>100</td><td>100</td></tr>
+					<tr><th scope="row">Lamp, old part</th><td>100</td><td>100</td></tr>
+					<tr><th scope="row">Lamp, new part</th><td>100</td><td class="bad">47</td></tr>
+					<tr><th scope="row">Lamp, empty</th><td>100</td><td>100</td></tr>
+					<tr class="mean"><th scope="row">Mean</th><td>99.6</td><td>90.7</td></tr>
+				</tbody>
+			</table>
+		</div>
+		<p class="note">The YOLO stand-in was as accurate or better everywhere in the test. The win is the cost of adapting, not accuracy.</p>
+	</section>
+
+	<section class="section wrap" aria-labelledby="q-covered">
+		<p class="label">The teacher loop</p>
+		<h2 id="q-covered" class="t-question">Confident is not the same as <em>covered</em>.</h2>
+		<p class="lede">At the new station I let the checker label the training frames and kept only its confident answers.</p>
+		<ol class="steps">
+			<li>
+				<span class="figure">39 of 39</span>
+				<p>Confident labels that were correct. The checker was sure on 39 of 92 frames, and right every time.</p>
+			</li>
+			<li>
+				<span class="figure">65%</span>
+				<p>What the classifier trained on them scored. Exactly what “always say part” scores. Every one of the 9 “part” labels was the whisk, so it never learnt the padlock.</p>
+			</li>
+			<li>
+				<span class="figure">5 labels</span>
+				<p>Five frames confirmed by a person took the same classifier to 100%. A model that teaches itself needs a coverage check, not only a confidence cutoff.</p>
+			</li>
+		</ol>
+	</section>
+
+	<section class="section wrap" aria-labelledby="q-claim">
+		<p class="label">Limits</p>
+		<h2 id="q-claim" class="t-question">What I do <em>not</em> claim.</h2>
+		<div class="prose">
+			<p><strong>Nothing ran on an edge box.</strong> Everything ran on a cloud T4 and my laptop. Every edge number is an estimate.</p>
+			<p><strong>One camera, one scene, one day.</strong> The accuracy numbers will not transfer to a real machine cell. The method, the checks and the speed ratios should.</p>
+			<p><strong>I threw away my first two runs.</strong> The first seconds of each clip showed an empty tray under a “part” label. The fix was one rule, decided from the footage, not the results: drop the first 10 seconds of every clip.</p>
+			<p><strong>How it was built.</strong> The question, the design, the test, the filming and every claim are mine. I directed Claude Code to write the notebook code from my spec, then checked, corrected and reran it four times.</p>
+		</div>
+	</section>
+</Base>
+
+<script>
+	// Hover: the camera turns to watch the pointer and reads it like any new part. Unsure first, so the
+	// checker is asked, then a refit, then it knows the pointer. The page's argument, played on the visitor.
+	// ponytail: mouse only. Touch keeps the plain loop.
+	const svg = document.querySelector<SVGSVGElement>('.belt svg');
+	if (svg && matchMedia('(hover: hover)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		const cam = svg.querySelector('.cam')!;
+		const cone = svg.querySelector('.cone')!;
+		const cable = svg.querySelector('.cable')!;
+		const you = svg.querySelector('.you')!;
+		const [p, say] = you.querySelectorAll('text');
+		const HOME = [320, 176]; // straight down onto the belt
+		const STAGES: [number, string, string][] = [
+			[0, '0.50', 'unsure: ask the checker'],
+			[1200, '0.50', 'checker: part. refit 7 ms'],
+			[1900, '0.97', 'part'],
+		];
+		let aim = [...HOME], to = [...HOME], since = 0, learnt = false, steering = false, raf = 0;
+
+		const frame = (t: number) => {
+			aim = aim.map((v, i) => v + (to[i] - v) * 0.12);
+			const dx = aim[0] - 320, dy = Math.max(aim[1] - 42, 40);
+			const a = Math.max(-80, Math.min(80, (-Math.atan2(dx, dy) * 180) / Math.PI));
+			const d = Math.min(Math.hypot(dx, dy), 240);
+			const w = 7 + ((d - 40) * 37) / 94; // the cone widens as it reaches, like the original 94 px drop
+			cam.setAttribute('transform', `rotate(${a} 320 42)`);
+			cone.setAttribute('d', `M313 82 L${320 - w} ${42 + d} H${320 + w} L327 82 Z`);
+			// Keep the cable plugged into the camera's side as it turns
+			const r = (a * Math.PI) / 180;
+			cable.setAttribute('d', `M${320 + 26 * Math.cos(r) - 15 * Math.sin(r)} ${42 + 26 * Math.sin(r) + 15 * Math.cos(r)} C 420 57, 440 44, 520 44`);
+
+			if (steering) {
+				const age = learnt ? Infinity : Math.max(0, t - since); // a frame can be stamped just before the enter event
+				const [, prob, verdict] = STAGES.findLast(([at]) => age >= at)!;
+				if (verdict === 'part') learnt = true;
+				p.textContent = `P(part) ${prob}`;
+				say.textContent = verdict;
+				svg.classList.toggle('asking', age < 1200);
+				// Flip the reading to the left of the pointer near the right edge
+				const flip = to[0] > 400;
+				you.setAttribute('transform', `translate(${to[0]} ${to[1]})`);
+				you.querySelectorAll('text').forEach((el) => {
+					el.setAttribute('x', flip ? '-26' : '26');
+					el.setAttribute('text-anchor', flip ? 'end' : 'start');
+				});
+			}
+			const settled = Math.hypot(to[0] - aim[0], to[1] - aim[1]) < 0.3;
+			raf = steering || !settled ? requestAnimationFrame(frame) : 0;
+		};
+		const run = () => { raf ||= requestAnimationFrame(frame); };
+
+		svg.addEventListener('pointerenter', () => { steering = true; since = performance.now(); svg.classList.add('steer'); run(); });
+		svg.addEventListener('pointermove', (e) => {
+			const pt = new DOMPoint(e.clientX, e.clientY).matrixTransform(svg.getScreenCTM()!.inverse());
+			to = [pt.x, pt.y];
+			run();
+		});
+		svg.addEventListener('pointerleave', () => {
+			steering = false;
+			to = [...HOME];
+			svg.classList.remove('steer', 'asking');
+			run();
+		});
+	}
+</script>
+
+<style>
+	.top { border-top: 0; padding-top: clamp(2rem, 6vh, 4rem); }
+	h1, h2 { margin: 0 0 1.25rem; max-width: 24ch; }
+
+	.belt { margin: 0; }
+	.belt svg { display: block; width: 100%; height: auto; max-width: 820px; overflow: visible; }
+	.belt figcaption { margin-top: 0.75rem; max-width: 60ch; }
+
+	.ink {
+		fill: none;
+		stroke: var(--ink);
+		stroke-width: 2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		filter: url(#ink-1);
+		animation: boil 0.45s steps(1) infinite;
+	}
+	.fill { fill: var(--sheet); }
+	.cone { fill: var(--accent); fill-opacity: 0.12; stroke: var(--accent); stroke-width: 1.25; stroke-dasharray: 4 5; animation: snap 3s ease-out infinite; }
+	.led { fill: var(--accent); stroke: none; animation: snap 3s steps(1) infinite; }
+	.cable { stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 3 6; animation: march 0.6s linear infinite; }
+	.checker { fill: var(--sheet); stroke: var(--accent); animation: lit 12s linear -3s infinite; }
+
+	/* Belt speed is 640 px per 12 s. Treads, rollers and trays all move at that speed */
+	.tread { stroke: var(--ink-3); stroke-width: 1.5; stroke-dasharray: 6 14; animation: tread 0.375s linear infinite; }
+	.tread.back { animation-direction: reverse; }
+	.roller { transform-box: fill-box; transform-origin: center; animation: spin 2.4s linear infinite; }
+	.slots { animation: belt 12s linear infinite; }
+	.slots path, .slots rect { stroke-width: 1.75; }
+
+	.tag { font: 500 11px var(--mono); letter-spacing: 0.08em; fill: var(--ink-3); }
+	.read { font: 500 14px var(--mono); fill: var(--ink); opacity: 0; animation: read 12s linear infinite; }
+	.read .say { fill: var(--ink-3); }
+	.read.unsure .say { fill: var(--accent); }
+	.read.still { opacity: 1; } /* the frame shown when motion is off */
+
+	/* Pointer over the drawing: the belt readings give way to the camera's reading of the pointer */
+	.you { visibility: hidden; font: 500 14px var(--mono); fill: var(--ink); pointer-events: none; }
+	.you .say { fill: var(--ink-3); }
+	.crop { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 4 4; }
+	.steer .you { visibility: visible; }
+	.steer .read { visibility: hidden; }
+	.steer .checker { animation: none; }
+	.asking .checker { fill: var(--accent); }
+	.asking .you .say { fill: var(--accent); }
+
+	@keyframes boil { 0% { filter: url(#ink-1); } 33% { filter: url(#ink-2); } 66% { filter: url(#ink-3); } }
+	@keyframes belt { from { transform: translateX(0); } to { transform: translateX(640px); } }
+	@keyframes tread { to { stroke-dashoffset: -20; } }
+	@keyframes march { to { stroke-dashoffset: -9; } }
+	@keyframes spin { to { transform: rotate(360deg); } }
+	@keyframes snap { 0% { fill-opacity: 0.4; opacity: 1; } 30%, 100% { fill-opacity: 0.12; opacity: 0.35; } }
+	/* Visible while a slot sits under the lens: 0.75 s either side of its moment */
+	@keyframes read { 0%, 6% { opacity: 1; } 7%, 93% { opacity: 0; } 94%, 100% { opacity: 1; } }
+	@keyframes lit { 0%, 6% { fill: var(--accent); } 7%, 93% { fill: var(--sheet); } 94%, 100% { fill: var(--accent); } }
+
+	.scroll { overflow-x: auto; }
+	table { border-collapse: collapse; font: 400 0.88rem/1.4 var(--mono); font-variant-numeric: tabular-nums; min-width: 22rem; }
+	caption { text-align: left; caption-side: top; margin-bottom: 0.75rem; }
+	th, td { padding: 0.5rem 1.5rem 0.5rem 0; border-bottom: 1px solid var(--rule); text-align: right; }
+	th[scope='row'], thead th:first-child { text-align: left; font-weight: 400; color: var(--ink-2); }
+	thead th { font: 700 0.69rem/1.3 var(--sans); text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); }
+	td { color: var(--ink); }
+	td.bad { color: var(--down); font-weight: 500; }
+	.mean th, .mean td { border-top: 1px solid var(--ink); border-bottom: 0; }
+
+	.prose p { margin: 0 0 1.25rem; }
+	.prose strong { color: var(--ink); }
+</style>

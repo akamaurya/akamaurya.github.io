@@ -103,6 +103,30 @@ p { max-width: var(--measure); }
 /* The one italic word that carries the line */
 .t-hero em, .t-question em { font-style: italic; color: var(--accent); }
 
+/* Page sections, shared by the home page and the work pages */
+.section {
+	padding-block: clamp(4rem, 12vh, 8rem);
+	border-top: 1px solid var(--rule);
+}
+.section > .label { margin: 0 0 0.75rem; }
+.lede { margin: 0 0 2.5rem; }
+
+/* Sections 2 and 3: three beats as a static stack. Scroll scenes enhance this in Phase 4. */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 2rem; }
+.steps li { border-top: 1px solid var(--rule); padding-top: 1rem; }
+.steps p { margin: 0.5rem 0 0; }
+.figure {
+	display: block;
+	font: 500 clamp(1.75rem, 3.4vw, 2.5rem)/1.1 var(--mono);
+	font-variant-numeric: tabular-nums;
+	color: var(--ink);
+	text-wrap: balance;
+}
+.note { margin: 2rem 0 0; color: var(--ink-3); font-size: 0.94rem; }
+@media (min-width: 768px) {
+	.steps { grid-template-columns: repeat(3, 1fr); }
+}
+
 @media (prefers-reduced-motion: reduce) {
 	*, *::before, *::after { animation: none !important; transition: none !important; }
 }
