@@ -2,6 +2,7 @@
 import { existsSync } from 'node:fs';
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
+import Belt from '../components/Belt.astro';
 import { decisions } from '../data/decisions';
 
 const homeCards = decisions.filter((d) => d.homeCard);
@@ -86,11 +87,21 @@ const hasResume = existsSync('public/resume.pdf');
 				<p class="label">SuperYou Shelf Read · Sep 2026</p>
 				<h3>A shelf audit nobody asked for.</h3>
 				<p>Four findings from two evenings of public data.</p>
+				<a class="poster glow" style="--glow: url(/img/superyou-shelf-read.webp)" href="https://claude.ai/code/artifact/a4192f0b-ecd0-4cbe-8aa7-e07999a53a13">
+					<img src="/img/superyou-shelf-read.webp" width="1200" height="510" loading="lazy" decoding="async" alt="SuperYou Shelf Read: on Zepto Mumbai, 1 of 12 Power Puffs slots in stock against 8 of 8 on Blinkit. Opens the full read." />
+				</a>
+				<p class="links label">
+					<a href="https://claude.ai/code/artifact/a4192f0b-ecd0-4cbe-8aa7-e07999a53a13">Read the audit</a>
+				</p>
 			</li>
 			<li class="card">
-				<p class="label">Finance system</p>
-				<h3>A ledger that matches the card statements to the paisa.</h3>
-				<p>Bank and card alerts become ledger entries on their own, and every statement is reconciled against them.</p>
+				<p class="label">Edge vision test · Sep 2026</p>
+				<h3>A factory camera that learns a new part in milliseconds.</h3>
+				<p>A three day test on a phone, a steel tray and a cloud GPU.</p>
+				<a class="belt" href="/work/edge-vision/" aria-label="Read the edge vision test"><Belt /></a>
+				<p class="links label">
+					<a href="/work/edge-vision/">Read the test</a>
+				</p>
 			</li>
 			<li class="card">
 				<p class="label">Portfolio Monitor · demo mode</p>
@@ -232,6 +243,8 @@ const hasResume = existsSync('public/resume.pdf');
 	.why { color: var(--ink-2); font-size: 0.94rem; }
 
 	.poster { margin: 0.25rem 0 1rem; }
+	p + .poster { margin-top: 1rem; }
+	.belt { display: block; margin: 1rem 0 0; }
 	.links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin-top: 1rem !important; }
 	.links a { color: var(--accent); text-decoration: none; }
 	.links a:hover { text-decoration: underline; }
