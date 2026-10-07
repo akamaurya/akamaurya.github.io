@@ -1,5 +1,5 @@
 // One entry per decision. Format on the page: the obvious move, what I did, why.
-// ponytail: seven of the ten so far. The rest arrive with /decisions/ in Phase 3.
+// ponytail: eight of the ten so far. The rest arrive with /decisions/ in Phase 3.
 export interface Decision {
 	id: string;
 	title: string;
@@ -72,6 +72,15 @@ export const decisions: Decision[] = [
 		obvious: 'Build the product, then look for buyers.',
 		did: 'Wrote down when I would stop: if losses are under about ₹10k and juniors cope fine, shelve it.',
 		why: 'Small clubs are users, not customers. They have no budget, and free junior labour already does the work.',
+		homeCard: false,
+	},
+	{
+		id: 'edge-vision-ship-gate',
+		title: 'Gated releases on the worst cell, not the average, and it blocked my own model',
+		source: 'Edge vision test',
+		obvious: 'Ship the new classifier. It averaged 90.7% on the test set.',
+		did: 'Wrote a rule first: a new version ships only if no cell of a people-labelled test set gets worse. It failed my own classifier.',
+		why: 'It scored 47% on one cell, the new part under lamp light. An average hides the one place a line breaks.',
 		homeCard: true,
 	},
 ];
