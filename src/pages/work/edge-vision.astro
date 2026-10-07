@@ -130,7 +130,8 @@ import Belt from '../../components/Belt.astro';
 	.belt { margin: 0; }
 	.belt figcaption { margin-top: 0.75rem; max-width: 60ch; }
 
-	.diagram { display: block; max-width: 760px; background: #fff; border: 1px solid var(--rule); }
+	/* Recoloured to the paper palette, with the belt animation's ink wobble baked into the SVG */
+	.diagram { display: block; max-width: 760px; background: var(--paper); box-shadow: 0 0 24px 18px var(--paper); } /* paper halo, like the text: the grain never sits under the lines */
 
 	.scroll { overflow-x: auto; }
 	table { border-collapse: collapse; font: 400 0.88rem/1.4 var(--mono); font-variant-numeric: tabular-nums; min-width: 22rem; }
