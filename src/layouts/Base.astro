@@ -54,6 +54,16 @@ const { title, description, noindex = false } = Astro.props;
 				Ink landscape generated with <a href="https://github.com/LingDong-/shan-shui-inf">shan-shui-inf</a> by Lingdong Huang, MIT licence.
 			</p>
 		</footer>
+		<script>
+			// Phones: hand email links to the visitor's own mail app (Gmail on most Android phones, and on iPhones that set it as default).
+			// Gmail web compose stays for desktop and for JavaScript off.
+			if (matchMedia('(pointer: coarse)').matches) {
+				for (const a of document.querySelectorAll<HTMLAnchorElement>('a[href^="https://mail.google.com"]')) {
+					a.href = 'mailto:' + new URL(a.href).searchParams.get('to');
+					a.removeAttribute('target');
+				}
+			}
+		</script>
 	</body>
 </html>
 

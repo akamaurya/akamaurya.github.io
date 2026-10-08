@@ -58,8 +58,9 @@ import Belt from '../../components/Belt.astro';
 			Solid lines run on every frame. Dashed lines run once a day: labels collect, the tiny layer refits overnight,
 			and a ship gate decides whether the new version goes live before the morning shift.
 		</p>
-		<a class="diagram" href="/img/edge-vision-design.svg">
-			<img src="/img/edge-vision-design.svg" width="960" height="960" loading="lazy" decoding="async" alt="Flowchart. Camera frames are cropped into fixed zones. A fast classifier reads every frame; unsure frames go to a checker, a small vision language model. Confident checker answers become labels, the rest go to a human review queue. Nightly, a balance and coverage check refits the tiny layer, and a ship gate compares it with yesterday on a people-labelled golden set before deploying. Existing YOLO detectors run alongside, feeding the same event logic and dashboard." />
+		{/* ponytail: pre-rendered from edge-vision-design.svg (Chrome headless at 2x and 3x, cwebp -q 90). Safari draws SVG filters at 1x in an image tag, so the ink wobble went soft on iPhone. Re-render if the SVG changes. */}
+		<a class="diagram" href="/img/edge-vision-design@3x.webp">
+			<img src="/img/edge-vision-design.webp" srcset="/img/edge-vision-design.webp 1920w, /img/edge-vision-design@3x.webp 2880w" sizes="(min-width: 800px) 760px, 100vw" width="960" height="960" loading="lazy" decoding="async" alt="Flowchart. Camera frames are cropped into fixed zones. A fast classifier reads every frame; unsure frames go to a checker, a small vision language model. Confident checker answers become labels, the rest go to a human review queue. Nightly, a balance and coverage check refits the tiny layer, and a ship gate compares it with yesterday on a people-labelled golden set before deploying. Existing YOLO detectors run alongside, feeding the same event logic and dashboard." />
 		</a>
 		<p class="note">The design as I pitched it, so the numbers in it are targets. The test then measured the refit in milliseconds, not seconds.</p>
 	</section>
