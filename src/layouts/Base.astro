@@ -3,6 +3,7 @@ import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-mono/500.css';
 import '../styles/global.css';
 import Paper from '../components/Paper.astro';
+import PostHog from '../components/PostHog.astro';
 
 interface Props {
 	title: string;
@@ -21,6 +22,7 @@ const { title, description, noindex = false } = Astro.props;
 		<title>{title}</title>
 		{description && <meta name="description" content={description} />}
 		{noindex && <meta name="robots" content="noindex" />}
+		<PostHog />
 	</head>
 	<body>
 		<Paper />
@@ -50,11 +52,19 @@ const { title, description, noindex = false } = Astro.props;
 				<a href="https://linkedin.com/in/mkumbkarni">LinkedIn</a>
 				<a href="https://github.com/akamaurya">GitHub</a>
 			</p>
+			<p class="t-data" id="eu-note" hidden>
+				This site uses PostHog cookies to see how visitors use it, including recordings of clicks and scrolling. <a href="?notrack">Stop tracking me</a>.
+			</p>
 			<p class="t-data">
 				Ink landscape generated with <a href="https://github.com/LingDong-/shan-shui-inf">shan-shui-inf</a> by Lingdong Huang, MIT licence.
 			</p>
 		</footer>
 		<script>
+			// ponytail: time zone stands in for location, so no geo lookup is needed. Europe/* also catches the UK, Switzerland and Turkey; switch to a geo API if that matters.
+			if (Intl.DateTimeFormat().resolvedOptions().timeZone.startsWith('Europe/')) {
+				document.getElementById('eu-note')?.removeAttribute('hidden');
+			}
+
 			// Phones: hand email links to the visitor's own mail app (Gmail on most Android phones, and on iPhones that set it as default).
 			// Gmail web compose stays for desktop and for JavaScript off.
 			if (matchMedia('(pointer: coarse)').matches) {
