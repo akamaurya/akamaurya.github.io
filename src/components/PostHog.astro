@@ -2,7 +2,8 @@
 // Project token from PostHog > Project settings. Public by design, safe to commit.
 // Empty token, or `npm run dev`, renders nothing.
 const token = 'phc_oCSXmpYoDyqt4Zspb4V5NHwqQkL6f3qdLLfBkHYYs3JW';
-const api_host = 'https://us.i.posthog.com'; // EU project: 'https://eu.i.posthog.com'
+// Cloudflare Worker "relay" on the akamaurya account: PostHog's proxy script, so ad blockers that list posthog.com don't drop visits.
+const api_host = 'https://relay.akamaurya.workers.dev';
 ---
 
 {token && import.meta.env.PROD && (
@@ -12,7 +13,7 @@ const api_host = 'https://us.i.posthog.com'; // EU project: 'https://eu.i.postho
 		// ?notrack opts this browser out for good, starting with the page that carries it.
 		const q = new URLSearchParams(location.search);
 		const notrack = q.has('notrack');
-		posthog.init(token, { api_host, defaults: '2026-05-30', person_profiles: 'always', opt_out_capturing_by_default: notrack });
+		posthog.init(token, { api_host, ui_host: 'https://us.posthog.com', defaults: '2026-05-30', person_profiles: 'always', opt_out_capturing_by_default: notrack });
 		if (notrack) posthog.opt_out_capturing();
 		if (q.get('ref')) posthog.setPersonProperties({ ref: q.get('ref') }, { first_ref: q.get('ref') });
 	</script>
