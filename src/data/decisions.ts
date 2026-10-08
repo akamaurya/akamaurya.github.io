@@ -1,5 +1,5 @@
 // One entry per decision. Format on the page: the obvious move, what I did, why.
-// ponytail: eight of the ten so far. The rest arrive with /decisions/ in Phase 3.
+// ponytail: ten so far, eight on the home page. /decisions/ shows them all in Phase 3.
 export interface Decision {
 	id: string;
 	title: string;
@@ -26,7 +26,7 @@ export const decisions: Decision[] = [
 		source: 'The Divine Hima',
 		obvious: 'Hire a photographer. Weak photos look like the problem.',
 		did: 'Declined it. Directed AI agents to build a pipeline that turns phone photos of a dish into graded, correctly cropped menu cards.',
-		why: 'The shoot came out at about a 15-year payback. A phone shoot came out at about four months.',
+		why: 'A ₹2,000 phone shoot and an image pipeline did the job.',
 		homeCard: true,
 	},
 	{
@@ -63,6 +63,25 @@ export const decisions: Decision[] = [
 		obvious: 'Send the first read as it was.',
 		did: 'Pulled the data again the next evening and changed the finding.',
 		why: 'Zepto hides some out-of-stock rows from search. A missing row is not a delisting.',
+		homeCard: true,
+	},
+	{
+		id: 'pixel-pipeline-prototype',
+		title: 'Pitched the pricing pipeline before anyone asked for it',
+		source: 'Google via Smollan',
+		obvious: 'Keep assembling the weekly analysis by hand. That was the job as given.',
+		did: 'Built a prototype on my own, showed it to my manager, got her yes, then built the full pipeline.',
+		why: 'A working prototype gets a yes faster than a proposal, and I can improve it while it runs. Here it also answered the two questions I knew my manager would ask: is the data right, and does the output read the way Google’s decks read. She could check both on screen.',
+		homeCard: true,
+	},
+	{
+		// The only miss. ponytail: reuses the three fields as built, what happened, what I changed; /decisions/ labels them when it ships.
+		id: 'emea-deck-miss',
+		title: 'Built a pricing deck my manager liked and the client could not read',
+		source: 'Google via Smollan',
+		obvious: 'A recurring pricing deck for 33 markets. I grouped countries into regions and devices into price segments, and showed monthly changes as a heatmap built from my own Python pipeline.',
+		did: 'The pricing lead on the Google side found it too complicated. My country-level aggregation was also not how her team measured price.',
+		why: 'I rebuilt the aggregation around the price changes her team tracked. I had designed it for me. Now I find out how the reader already measures the thing before I design anything.',
 		homeCard: true,
 	},
 	{
