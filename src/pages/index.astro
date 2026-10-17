@@ -8,21 +8,20 @@ import { decisions } from '../data/decisions';
 const homeCards = decisions.filter((d) => d.homeCard);
 // Render only when the file exists.
 const hasHeadshot = existsSync('public/img/headshot.webp');
-const hasResume = existsSync('public/resume.pdf');
 // ponytail: inner pages arrive in Phase 3. Cards, steps and the essay get their links then.
 ---
 
 <Base
 	title="Chander Maurya Kumbkarni"
-	description="I worked on Google’s Pixel pricing through Smollan, then on a hotel’s costs in Dharamshala. I am looking for a Founder’s Office role that brings together everything I have learnt."
+	description="I work in the Founder’s Office at Mihuru in Mumbai. Before that, I worked on Google’s Pixel pricing through Smollan and on a hotel’s costs in Dharamshala."
 >
 	<Hero />
 
 	<section id="work" class="section wrap" aria-labelledby="q-wrong">
-		<p class="label">The Divine Hima · Dharamshala · 2026</p>
+		<p class="label">The Divine Hima · Dharamshala · Jun to Oct 2026</p>
 		<h2 id="q-wrong" class="t-question">Can he find the number that is <em>wrong</em>?</h2>
 		<p class="lede">
-			My family’s nine-room hotel and its restaurant in Dharamshala. I have run its numbers since June 2026. No
+			My family’s nine-room hotel and its restaurant in Dharamshala. I ran its numbers from June to October 2026. No
 			analytics team, no data warehouse.
 		</p>
 		<ol class="steps">
@@ -48,7 +47,7 @@ const hasResume = existsSync('public/resume.pdf');
 			</li>
 			<li>
 				<span class="figure">₹0</span>
-				<p>Direct bookings from all of it so far. That is the open problem.</p>
+				<p>Direct bookings from all of it by October. Still the open problem.</p>
 			</li>
 		</ol>
 	</section>
@@ -147,11 +146,10 @@ const hasResume = existsSync('public/resume.pdf');
 		</ul>
 	</section>
 
-	<section class="section wrap" aria-labelledby="q-truth">
-		<p class="label">Gaps</p>
-		<h2 id="q-truth" class="t-question">Will he tell me the <em>truth</em>?</h2>
+	<section class="section wrap" aria-labelledby="q-work">
+		<p class="label">How I work</p>
+		<h2 id="q-work" class="t-question">How does he <em>work</em>?</h2>
 		<div class="prose">
-			<p><strong>What I have not done yet.</strong> I was a contractor at Smollan for 20 months, not an employee. They offered me a promotion. It was more of the same work with no ownership, so I left in March 2026 with no job lined up, and I underestimated how long the search would take. Since then: my family’s hotel and a job search. The hotel is my family’s, so nobody there could overrule me. Its cost results are modelled, and its traffic has not turned into a direct booking yet. I have not managed direct reports or run a paid ad account.</p>
 			<p><strong>How I use AI.</strong> I use AI agents heavily to do the building. I do not use them to decide what is worth building. This site was built that way: I specified it, tested it and shipped it.</p>
 		</div>
 	</section>
@@ -176,16 +174,15 @@ const hasResume = existsSync('public/resume.pdf');
 
 	<section id="contact" class="section wrap ask" aria-labelledby="q-ask">
 		<div>
-			<p class="label">The ask</p>
-			<h2 id="q-ask" class="t-question">Based in Delhi. Available <em>immediately</em>.</h2>
-			<p class="where">Bengaluru or Delhi preferred. Open to relocating anywhere in India or abroad.</p>
+			<p class="label">Contact</p>
+			<h2 id="q-ask" class="t-question">Based in <em>Mumbai</em>.</h2>
+			<p class="where">Happy to talk about anything on this page.</p>
 			<p class="actions">
 				<!-- ponytail: Gmail compose works without a desktop mail app; the address beside it covers other mail clients -->
 				<a class="button" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=mkumbkarni@gmail.com" target="_blank" rel="noopener">Email me</a>
 				<a class="label" href="mailto:mkumbkarni@gmail.com">mkumbkarni@gmail.com</a>
 				<button class="copy" type="button" data-copy="mkumbkarni@gmail.com" aria-label="Copy email address" title="Copy email address" hidden><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2" /><path d="M5 15V5a2 2 0 0 1 2-2h10" /></svg></button>
 				<a class="label" href="https://linkedin.com/in/mkumbkarni">LinkedIn</a>
-				{hasResume && <a class="label" href="/resume.pdf">Resume</a>}
 			</p>
 		</div>
 		{hasHeadshot && (

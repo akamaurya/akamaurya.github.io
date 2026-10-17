@@ -1,0 +1,20 @@
+---
+import Base from '../layouts/Base.astro';
+// ponytail: a hand-edited list, newest first. Move to a content collection past 20 entries.
+---
+
+<Base title="Now · Chander Maurya Kumbkarni" description="What Chander Maurya Kumbkarni is doing now.">
+	<section class="section wrap" aria-labelledby="q-now">
+		<p class="label">Now</p>
+		<h1 id="q-now" class="t-question">What is he doing <em>now</em>?</h1>
+		<ul class="now">
+			<li><time datetime="2026-10">Oct 2026</time>: Joined the Founder’s Office at Mihuru in Mumbai.</li>
+		</ul>
+		<p class="t-data">Last updated <time datetime="2026-10-17">17 Oct 2026</time></p>
+	</section>
+</Base>
+
+<style>
+	.now { list-style: none; margin: 0 0 2.5rem; padding: 0; display: grid; gap: 1rem; }
+	.now time { font-family: var(--mono); }
+</style>
